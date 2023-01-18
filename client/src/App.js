@@ -1,5 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
+import { Box } from "@chakra-ui/react";
+import ItemCardContainer from "./components/ItemCardContainer/ItemCardContainer";
 
 //tempItems {id, position, type}
 //items {id, position, title, seller}
@@ -17,9 +19,9 @@ function App() {
   console.log(items);
 
   return (
-    <div className="App">
-      <h1>Ranking de productos</h1>
-    </div>
+    <Box bg='#283247' minH='100vh'>
+      {items.length > 0 &&  <ItemCardContainer products={items}/>}
+    </Box>
   );
 }
 
