@@ -19,6 +19,12 @@ function App() {
 
   // console.log(items);
 
+  useEffect(() => {
+    fetch('/test')
+    .then(res => res.json())
+    .then(res => console.log(res.buy_box_winner.seller_id))
+  }, []);
+
   console.log(catIndex);
 
   const handleOnChange = (index) => {
@@ -34,6 +40,9 @@ function App() {
       case 2:
         cat = "MLA412663";
         break;
+      case 3:
+        cat = "MLA2997";
+        break;
     }
     fetch(`/getRanking/?param=${cat}`)
       .then((res) => res.json())
@@ -45,15 +54,15 @@ function App() {
       {/* {items.length > 0 &&  <ItemCardContainer products={items}/>} */}
       <Tabs color="#E9EFF1" onChange={(index) => handleOnChange(index)}>
         <TabList>
-          <Tab _selected={{ color: "#E9EFF1", bg: "#8098AD" }}>
-            Controladores MIDI
-          </Tab>
-          <Tab _selected={{ color: "#E9EFF1", bg: "#8098AD" }}>
-            Baterias Electronicas
-          </Tab>
+          <Tab _selected={{ color: "#E9EFF1", bg: "#8098AD" }}>Controladores MIDI</Tab>
+          <Tab _selected={{ color: "#E9EFF1", bg: "#8098AD" }}>Baterias Electronicas</Tab>
           <Tab _selected={{ color: "#E9EFF1", bg: "#8098AD" }}>Melodicas</Tab>
+          <Tab _selected={{ color: "#E9EFF1", bg: "#8098AD" }}>Teclados</Tab>
         </TabList>
         <TabPanels>
+          <TabPanel>
+            {items.length > 0 && <ItemCardContainer products={items} />}
+          </TabPanel>
           <TabPanel>
             {items.length > 0 && <ItemCardContainer products={items} />}
           </TabPanel>

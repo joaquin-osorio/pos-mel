@@ -8,7 +8,7 @@ const ItemCardContainer = ({ products }) => {
             <Text color='#E9EFF1' m={3}>18/01/2023</Text>
             {products.map((item) => (
                 <ItemCard text={item.title} special={
-                    item.seller === 229557596 ? true : false
+                    item.seller === 229557596 || item.seller === 10477825 ? true : false
                 } />
             ))}
         </Flex>

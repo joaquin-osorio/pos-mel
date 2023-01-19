@@ -23,7 +23,6 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 
-//Hacer una funcion que genere un nuevo ACCESS_TOKEN y REFRESH_TOKEN cada cierto periodo de tiempo
 const renewToken = () => {
   axios
     .post(
@@ -42,14 +41,22 @@ const renewToken = () => {
       config.ACCESS_TOKEN = response.data.access_token;
       config.REFRESH_TOKEN = response.data.refresh_token;
       console.log("Access token renewed");
-      console.log('Access token: ' + response.data.access_token);
-      console.log('Refresh token: ' + response.data.refresh_token)
+      console.log("Access token: " + response.data.access_token);
+      console.log("Refresh token: " + response.data.refresh_token);
     })
     .catch((error) => console.error(error));
 };
 
 renewToken();
 setInterval(renewToken, 14400000);
+
+app.get('/test', (req, res) => {
+  axios
+    .get('https://api.mercadolibre.com/products/MLA16121139', {
+      headers: headers,
+    })
+    .then(response => {res.json(response.data)})
+})
 
 app.get("/getRanking", (req, res) => {
   axios
@@ -62,18 +69,33 @@ app.get("/getRanking", (req, res) => {
     .then((response) => response.data.content)
     .then((content) => {
       const fetchPromises = content.map((element) => {
-        return axios
-          .get(`https://api.mercadolibre.com/items/${element.id}`, {
-            headers: headers,
-          })
-          .then((response) => {
-            return {
-              id: response.data.id,
-              position: element.position,
-              title: response.data.title,
-              seller: response.data.seller_id,
-            };
-          });
+        if (element.type === "ITEM") {
+          return axios
+            .get(`https://api.mercadolibre.com/items/${element.id}`, {
+              headers: headers,
+            })
+            .then((response) => {
+              return {
+                id: response.data.id,
+                position: element.position,
+                title: response.data.title,
+                seller: response.data.seller_id,
+              };
+            });
+        } else if (element.type === "PRODUCT") {
+          return axios
+            .get(`https://api.mercadolibre.com/products/${element.id}`, {
+              headers: headers,
+            })
+            .then((response) => {
+              return {
+                id: element.id,
+                position: element.position,
+                title: response.data.name,
+                seller: response.data.buy_box_winner.seller_id,
+              };
+            });
+        }
       });
       Promise.all(fetchPromises).then((results) => res.json(results));
     });
