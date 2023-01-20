@@ -2,68 +2,63 @@ const express = require("express");
 const config = require("./config.js");
 const cors = require("cors");
 const axios = require("axios");
-const { type } = require("os");
+const fire = require("./fire.js");
 
 const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 3001;
 
-const headers = { Authorization: `Bearer ${config.ACCESS_TOKEN}` };
+let ACCESS_TOKEN = "";
+
 const renewHeaders = {
   accept: "application/json",
   "content-type": "application/x-www-form-urlencoded",
 };
-
-app.get("/api", (req, res) => {
-  res.json({ message: "Hola desde el servidor!" });
-});
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 
 const renewToken = () => {
-  axios
-    .post(
-      "https://api.mercadolibre.com/oauth/token",
-      {
-        grant_type: "refresh_token",
-        client_id: config.APP_ID,
-        client_secret: config.CLIENT_SECRET,
-        refresh_token: config.REFRESH_TOKEN,
-      },
-      {
-        headers: renewHeaders,
-      }
-    )
-    .then((response) => {
-      config.ACCESS_TOKEN = response.data.access_token;
-      config.REFRESH_TOKEN = response.data.refresh_token;
-      console.log("Access token renewed");
-      console.log("Access token: " + response.data.access_token);
-      console.log("Refresh token: " + response.data.refresh_token);
-    })
-    .catch((error) => console.error(error));
+  return new Promise((resolve, reject) => {
+    fire.getAuth().then((res) => {
+      axios
+        .post(
+          "https://api.mercadolibre.com/oauth/token",
+          {
+            grant_type: "refresh_token",
+            client_id: res.APP_ID,
+            client_secret: res.CLIENT_SECRET,
+            refresh_token: res.REFRESH_TOKEN,
+          },
+          {
+            headers: renewHeaders,
+          }
+        )
+        .then((res) => {
+          fire.pushAuth({
+            ACCESS_TOKEN: res.data.access_token,
+            REFRESH_TOKEN: res.data.refresh_token,
+          });
+          resolve(res.data.access_token);
+        })
+        .catch((error) => reject(error));
+    });
+  });
 };
 
-renewToken();
-setInterval(renewToken, 14400000);
-
-app.get('/test', (req, res) => {
-  axios
-    .get('https://api.mercadolibre.com/products/MLA16121139', {
-      headers: headers,
-    })
-    .then(response => {res.json(response.data)})
-})
+renewToken().then((res) => (ACCESS_TOKEN = res));
+setInterval(() => {
+  renewToken().then((res) => (ACCESS_TOKEN = res));
+}, 14400000);
 
 app.get("/getRanking", (req, res) => {
   axios
     .get(
       `https://api.mercadolibre.com/highlights/MLA/category/${req.query.param}`,
       {
-        headers: headers,
+        headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
       }
     )
     .then((response) => response.data.content)
@@ -72,7 +67,7 @@ app.get("/getRanking", (req, res) => {
         if (element.type === "ITEM") {
           return axios
             .get(`https://api.mercadolibre.com/items/${element.id}`, {
-              headers: headers,
+              headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
             })
             .then((response) => {
               return {
@@ -85,7 +80,7 @@ app.get("/getRanking", (req, res) => {
         } else if (element.type === "PRODUCT") {
           return axios
             .get(`https://api.mercadolibre.com/products/${element.id}`, {
-              headers: headers,
+              headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
             })
             .then((response) => {
               return {
