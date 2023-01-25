@@ -1,7 +1,19 @@
-import React from "react";
-import { Box, Text } from "@chakra-ui/react";
+import React, {useEffect, useState} from "react";
+import { Box, Text, Tooltip } from "@chakra-ui/react";
 
-const ItemCard = ({ special, text }) => {
+const ItemCard = ({ special, text, seller }) => {
+
+  const [sellerName, setSellerName] = useState('');
+
+  useEffect(() => {
+    fetch(`https://api.mercadolibre.com/users/${seller}`)
+    .then(res => res.json())
+    .then(data => {
+      setSellerName(data.nickname);
+      console.log(data.nickname);
+    })
+  }, [seller]);
+
   const bgColor = special ? "#8098AD" : "#E9EFF1";
   const textColor = special ? "#E9EFF1" : "#283247";
 
@@ -26,7 +38,9 @@ const ItemCard = ({ special, text }) => {
       alignItems="center"
       w="100%"
     >
-      <Text color={textColor}>{cutString(text, 25)}</Text>
+      <Tooltip hasArrow label={`${text} - ${sellerName}`} aria-label="A tooltip">
+        <Text color={textColor}>{cutString(text, 25)}</Text>
+      </Tooltip>
     </Box>
   );
 };

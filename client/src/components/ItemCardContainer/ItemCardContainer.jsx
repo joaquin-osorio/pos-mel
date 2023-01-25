@@ -7,7 +7,7 @@ const ItemCardContainer = ({ products }) => {
         <Flex direction='column' alignItems='center' w='16em'>
             <Text color='#E9EFF1' m={3}>18/01/2023</Text>
             {products.map((item) => (
-                <ItemCard text={item.title} special={
+                <ItemCard seller={item.seller} text={item.title} special={
                     item.seller === 229557596 || item.seller === 10477825 ? true : false
                 } />
             ))}
