@@ -54,9 +54,14 @@ setInterval(() => {
 }, 14400000);
 
 app.get("/getRanking", (req, res) => {
+  const { param, attribute, attributeValue } = req.query;
+  console.log('param', param)
+  console.log('attribute', attribute)
+  console.log('attributeValue', attributeValue)
   axios
     .get(
-      `https://api.mercadolibre.com/highlights/MLA/category/${req.query.param}`,
+      `https://api.mercadolibre.com/highlights/MLA/category/${attributeValue ? `${param}?attribute=BRAND&attributeValue=${attributeValue}` : `${param}`}`,
+      //`https://api.mercadolibre.com/highlights/MLA/category/${param}?attribute=BRAND&attributeValue=${attributeValue}`,
       {
         headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
       }

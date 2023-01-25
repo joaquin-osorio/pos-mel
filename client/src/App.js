@@ -39,7 +39,7 @@ function App() {
         cat = "MLA377642";
         break;
       case 7:
-        cat = "MLA2997?attribute=BRAND&attributeValue=101652";
+        cat = "MLA2997&attributeValue=101652";
         break;
       case 8:
         cat = "MLA412663";
