@@ -10,7 +10,6 @@ const ItemCard = ({ special, text, seller }) => {
     .then(res => res.json())
     .then(data => {
       setSellerName(data.nickname);
-      console.log(data.nickname);
     })
   }, [seller]);
 

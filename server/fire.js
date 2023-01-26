@@ -26,6 +26,17 @@ const getAuth = () => {
   });
 };
 
+const exampleDb = db.collection('MLA402916')
+
+const addReg = data => {
+  const d = new Date();
+  exampleDb.doc().set({
+    date: d,
+    ...data
+  })
+  .then(() => console.log("Document successfully written EJEMPLO!"))
+}
+
 
 const pushAuth = (data) => {
   AuthDocRef.update({
@@ -38,3 +49,4 @@ const pushAuth = (data) => {
 
 exports.pushAuth = pushAuth;
 exports.getAuth = getAuth;
+exports.addReg = addReg;

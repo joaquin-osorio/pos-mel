@@ -1,7 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Button } from "@chakra-ui/react";
 import ItemCardContainer from "./components/ItemCardContainer/ItemCardContainer";
 
 //tempItems {id, position, type}
@@ -53,6 +53,11 @@ function App() {
       .then((res) => setItems(res));
   };
 
+  const handleClick = () => {
+    //function that saves the items array in the database with a date object
+    fetch('/saveRanking')
+  }
+
   return (
     <Box bg="#283247" minH="100vh" p={0}>
       {/* {items.length > 0 &&  <ItemCardContainer products={items}/>} */}
@@ -70,7 +75,10 @@ function App() {
           <Tab _selected={{ color: "#E9EFF1", bg: "#8098AD" }}>Baterias</Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>{items.length > 0 && <ItemCardContainer products={items} />}</TabPanel>
+          <TabPanel>
+            {items.length > 0 && <ItemCardContainer products={items} />}
+            <Button colorScheme='blue' onClick={handleClick}>Save</Button>
+            </TabPanel>
           <TabPanel>{items.length > 0 && <ItemCardContainer products={items} />}</TabPanel>
           <TabPanel>{items.length > 0 && <ItemCardContainer products={items} />}</TabPanel>
           <TabPanel>{items.length > 0 && <ItemCardContainer products={items} />}</TabPanel>
