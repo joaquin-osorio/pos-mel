@@ -28,11 +28,11 @@ const getAuth = () => {
 
 const exampleDb = db.collection('MLA402916')
 
-const addReg = data => {
+const addReg = (data, category, attribute) => {
   const d = new Date();
-  exampleDb.doc().set({
+  db.collection(`${!attribute ? category : `${category}&attributeValue=${attribute}`}`).doc().set({
     date: d,
-    ...data
+    data: data
   })
   .then(() => console.log("Document successfully written EJEMPLO!"))
 }
@@ -47,6 +47,19 @@ const pushAuth = (data) => {
     .catch((error) => console.error("Error writing document: ", error));
 };
 
+const catDocRef = db.collection("categories").doc("Hk2MHxdajKLhINIFbu5z")
+
+const getCategories = () => {
+  return catDocRef.get().then((doc) => {
+    if (doc.exists) {
+      return doc.data();
+    } else {
+      console.log("No such document!");
+    }
+  })
+}
+
 exports.pushAuth = pushAuth;
 exports.getAuth = getAuth;
 exports.addReg = addReg;
+exports.getCategories = getCategories;

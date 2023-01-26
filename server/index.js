@@ -54,11 +54,10 @@ setInterval(() => {
 }, 14400000);
 
 app.get("/getRanking", (req, res) => {
-  const { param, attribute, attributeValue } = req.query;
+  const { param, attribute, attributeValue, save } = req.query;
   axios
     .get(
       `https://api.mercadolibre.com/highlights/MLA/category/${attributeValue ? `${param}?attribute=BRAND&attributeValue=${attributeValue}` : `${param}`}`,
-      //`https://api.mercadolibre.com/highlights/MLA/category/${param}?attribute=BRAND&attributeValue=${attributeValue}`,
       {
         headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
       }
@@ -94,55 +93,17 @@ app.get("/getRanking", (req, res) => {
             });
         }
       });
-      Promise.all(fetchPromises).then((results) => res.json(results));
+      Promise.all(fetchPromises).then((results) => {
+        if(save){
+          fire.addReg(results, param, attributeValue)
+        }
+        res.json(results)
+      });
     });
 });
 
-app.get('/saveRanking', (req, res) => {
-  const { category } = req.query
-
-  axios
-  .get(
-    `https://api.mercadolibre.com/highlights/MLA/category/MLA402916`,
-    {
-      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
-    }
-  )
-  .then((response) => response.data.content)
-  .then((content) => {
-    const fetchPromises = content.map((element) => {
-      if (element.type === "ITEM") {
-        return axios
-          .get(`https://api.mercadolibre.com/items/${element.id}`, {
-            headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
-          })
-          .then((response) => {
-            return {
-              id: response.data.id,
-              position: element.position,
-              title: response.data.title,
-              seller: response.data.seller_id,
-            };
-          });
-      } else if (element.type === "PRODUCT") {
-        return axios
-          .get(`https://api.mercadolibre.com/products/${element.id}`, {
-            headers: { Authorization: `Bearer ${ACCESS_TOKEN}` },
-          })
-          .then((response) => {
-            return {
-              id: element.id,
-              position: element.position,
-              title: response.data.name,
-              seller: response.data.buy_box_winner.seller_id,
-            };
-          });
-      }
-    });
-    Promise.all(fetchPromises).then((results) => {
-      fire.addReg(results)
-      res.json(results)
-    });
-  });
-
+app.get('/getCat', (req, res) => {
+  fire.getCategories()
+  .then(response => response.data)
+  .then(data => res.json(data))
 })
