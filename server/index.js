@@ -109,7 +109,7 @@ app.get('/getCat', (req, res) => {
 })
 
 app.get('/getHistory', (req, res) => {
-  const { param } = req.query
-  fire.getHistory(param)
+  const { param, attributeValue } = req.query
+  fire.getHistory(param, attributeValue)
   .then(data => res.json(data))
 })

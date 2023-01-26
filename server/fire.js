@@ -64,7 +64,7 @@ const getCategories = () => {
 
 const getHistory = (category, attribute) => {
   return db
-    .collection(category)
+    .collection(`${!attribute ? category : `${category}&attributeValue=${attribute}`}`)
     .get()
     .then((querySnapshot) => {
       const data = [];
