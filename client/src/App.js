@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import {
   Tabs,
   TabList,
@@ -15,6 +15,7 @@ function App() {
   const [items, setItems] = useState([]);
   const [categories, setCategories] = useState([]);
   const [catIndex, setCatIndex] = useState(0);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     fetch("/getCat")
@@ -27,11 +28,16 @@ function App() {
     fetch(`/getRanking/?param=${categories[index].ID}`)
       .then((res) => res.json())
       .then((res) => setItems(res));
+    fetch(`/getHistory/?param=${categories[index].ID}`)
+      .then((res) => res.json())
+      .then((res) => setHistory(res));
   };
 
   const handleClick = () => {
     fetch(`/getRanking/?param=${categories[catIndex].ID}&save=true`);
   };
+
+  console.log(history);
 
   return (
     <Box bg="#283247" minH="100vh" p={0}>
@@ -54,11 +60,22 @@ function App() {
             categories.map((cat, index) => {
               return (
                 <TabPanel key={index}>
-                  {items.length > 0 && <ItemCardContainer products={items} />}
-                  <Button colorScheme='blue' onClick={handleClick}>Save</Button>
+                  <Flex direction="row">
+                    {history.length &&
+                      history.map((day) => {
+                       return <ItemCardContainer products={day.data} date={day.date.seconds*1000} />;
+                      })}
+                    <Flex direction="column">
+                      {items.length > 0 && (
+                        <ItemCardContainer products={items} />
+                      )}
+                      <Button colorScheme="blue" onClick={handleClick}>
+                        Save
+                      </Button>
+                    </Flex>
+                  </Flex>
                 </TabPanel>
               );
-
             })}
         </TabPanels>
       </Tabs>
