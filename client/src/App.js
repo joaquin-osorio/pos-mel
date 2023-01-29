@@ -8,6 +8,7 @@ import {
   Tab,
   TabPanel,
   Button,
+  useToast
 } from "@chakra-ui/react";
 import ItemCardContainer from "./components/ItemCardContainer/ItemCardContainer";
 
@@ -16,6 +17,7 @@ function App() {
   const [categories, setCategories] = useState([]);
   const [catIndex, setCatIndex] = useState(0);
   const [history, setHistory] = useState([]);
+  const toast = useToast();
 
   useEffect(() => {
     fetch("/getCat")
@@ -34,7 +36,16 @@ function App() {
   };
 
   const handleClick = () => {
-    fetch(`/getRanking/?param=${categories[catIndex].ID}&save=true`);
+    fetch(`/getRanking/?param=${categories[catIndex].ID}&save=true`)
+    .then(() => {
+      toast({
+        title: "Your ranking has been saved.",
+        position: 'top',
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      })
+    })
   };
 
   console.log(history);
