@@ -27,16 +27,16 @@ function App() {
 
   const handleOnChange = (index) => {
     setCatIndex(index);
-    fetch(`/getRanking/?param=${categories[index].ID}`)
+    fetch(`https://pos-mel.vercel.app/getRanking/?param=${categories[index].ID}`)
       .then((res) => res.json())
       .then((res) => setItems(res));
-    fetch(`/getHistory/?param=${categories[index].ID}`)
+    fetch(`https://pos-mel.vercel.app/getHistory/?param=${categories[index].ID}`)
       .then((res) => res.json())
       .then((res) => setHistory(res));
   };
 
   const handleClick = () => {
-    fetch(`/getRanking/?param=${categories[catIndex].ID}&save=true`)
+    fetch(`https://pos-mel.vercel.app/getRanking/?param=${categories[catIndex].ID}&save=true`)
     .then(()=>{
       const tempArr = filterObjectsBySeller(items, [229557596, 10477825]);
       arrToClipboard(tempArr.map((item) => item.title));
