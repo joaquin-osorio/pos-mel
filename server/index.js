@@ -49,8 +49,8 @@ const renewToken = () => {
 };
 
 app.get('/getAuth', (req, res) => {
-  fire.getAuth().then((res) => {
-    res.send(res)
+  fire.getAuth().then((response) => {
+    res.send(response)
   })
 })
 
