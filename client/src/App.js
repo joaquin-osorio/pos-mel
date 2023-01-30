@@ -20,7 +20,7 @@ function App() {
   const toast = useToast();
 
   useEffect(() => {
-    fetch("/getCat")
+    fetch("https://pos-mel.vercel.app/getCat")
       .then((res) => res.json())
       .then((res) => setCategories(res));
   }, []);
