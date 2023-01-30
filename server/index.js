@@ -48,6 +48,13 @@ const renewToken = () => {
   });
 };
 
+app.get('/getAuth', (req, res) => {
+  fire.getAuth().then((res) => {
+    res.send(res)
+  })
+})
+
+
 renewToken().then((res) => (ACCESS_TOKEN = res));
 setInterval(() => {
   renewToken().then((res) => (ACCESS_TOKEN = res));
