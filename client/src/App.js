@@ -8,7 +8,7 @@ import {
   Tab,
   TabPanel,
   Button,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import ItemCardContainer from "./components/ItemCardContainer/ItemCardContainer";
 
@@ -37,6 +37,10 @@ function App() {
 
   const handleClick = () => {
     fetch(`/getRanking/?param=${categories[catIndex].ID}&save=true`)
+    .then(()=>{
+      const tempArr = filterObjectsBySeller(items, [229557596, 10477825]);
+      arrToClipboard(tempArr.map((item) => item.title));
+    })
     .then(() => {
       toast({
         title: "Your ranking has been saved.",
@@ -47,6 +51,30 @@ function App() {
       })
     })
   };
+
+  const arrToClipboard = (arr) => {
+    const currentDate = new Date();
+    const formattedDate = `${currentDate.getDate()}-${
+      currentDate.getMonth() + 1
+    }-${currentDate.getFullYear()}`;
+    const nonEmptyItems = arr.filter((item) => item !== "").length;
+    const totalItems = arr.length;
+    const modifiedArray = [formattedDate, nonEmptyItems, totalItems, ...arr];
+    const strArr = modifiedArray.join("\t");
+    navigator.clipboard
+      .writeText(strArr)
+      .then(() => console.log("Copied to clipboard!"));
+  };
+
+  function filterObjectsBySeller(originalArray, expectedSellers) {
+    return originalArray.map((obj) => {
+      if (expectedSellers.includes(obj.seller)) {
+        return obj;
+      } else {
+        return { title: "", seller: obj.seller };
+      }
+    });
+  }
 
   console.log(history);
 
@@ -73,9 +101,16 @@ function App() {
                 <TabPanel key={index}>
                   <Flex direction="row">
                     {history.length &&
-                      history.sort((a, b) => a.date.seconds - b.date.seconds).map((day) => {
-                       return <ItemCardContainer products={day.data} date={day.date.seconds*1000} />;
-                      })}
+                      history
+                        .sort((a, b) => a.date.seconds - b.date.seconds)
+                        .map((day) => {
+                          return (
+                            <ItemCardContainer
+                              products={day.data}
+                              date={day.date.seconds * 1000}
+                            />
+                          );
+                        })}
                     <Flex direction="column">
                       {items.length > 0 && (
                         <ItemCardContainer products={items} />
