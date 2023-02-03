@@ -100,7 +100,7 @@ function App() {
               return (
                 <TabPanel key={index}>
                   <Flex direction="row">
-                    {history.length &&
+                    {/*history.length &&
                       history
                         .sort((a, b) => a.date.seconds - b.date.seconds)
                         .map((day) => {
@@ -110,7 +110,7 @@ function App() {
                               date={day.date.seconds * 1000}
                             />
                           );
-                        })}
+                        })*/}
                     <Flex direction="column">
                       {items.length > 0 && (
                         <ItemCardContainer products={items} />
