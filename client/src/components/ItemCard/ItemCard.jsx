@@ -1,32 +1,18 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Box, Text, Tooltip } from '@chakra-ui/react'
+import { cutString } from '../../utils/arr'
+import { useSellerName } from './hooks'
+import { COLORS } from '../../utils/const'
 
 const ItemCard = ({ special, text, seller }) => {
-  const [sellerName, setSellerName] = useState('')
+  const sellerName = useSellerName(seller)
 
-  useEffect(() => {
-    fetch(`https://api.mercadolibre.com/users/${seller}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSellerName(data.nickname)
-      })
-  }, [seller]) // TODO: Put this function in a custom hook
-
-  const bgColor = special ? '#8098AD' : '#E9EFF1'
-  const textColor = special ? '#E9EFF1' : '#283247'
-
-  const cutString = (str, length) => {
-    if (str.length > length) {
-      return str.substring(0, length) + '...'
-    } else {
-      return str
-    }
-  }
+  const { PRIMARY_COLOR, DARK_COLOR, LIGHT_COLOR } = COLORS
 
   return (
     <Box
-      bg={bgColor}
+      bg={special ? PRIMARY_COLOR : LIGHT_COLOR}
       p={1}
       px={3}
       borderRadius="0.3em"
@@ -42,7 +28,9 @@ const ItemCard = ({ special, text, seller }) => {
         label={`${text} - ${sellerName}`}
         aria-label="A tooltip"
       >
-        <Text color={textColor}>{cutString(text, 25)}</Text>
+        <Text color={special ? LIGHT_COLOR : DARK_COLOR}>
+          {cutString(text, 25)}
+        </Text>
       </Tooltip>
     </Box>
   )
