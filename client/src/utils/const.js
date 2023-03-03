@@ -1,5 +1,10 @@
 export const COLORS = {
-  primary: '#8098AD',
-  dark: '#283247',
-  light: '#E9EFF1'
+  PRIMARY_COLOR: '#8098AD',
+  DARK_COLOR: '#283247',
+  LIGHT_COLOR: '#E9EFF1'
+}
+
+export const SELLERS = {
+  PC_MIDI_CENTER: 10477825,
+  ARTURIA_OFICIAL: 229557596
 }

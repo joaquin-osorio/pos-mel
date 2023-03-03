@@ -5,3 +5,12 @@ export const cutString = (str, length) => {
     return str
   }
 }
+
+export const getDateArr = (date) => {
+  if (!date) { // If there is no date, return today's date
+    const today = new Date()
+    return [today.getFullYear(), today.getMonth() + 1, today.getDate()]
+  } else {
+    return [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+  }
+}
