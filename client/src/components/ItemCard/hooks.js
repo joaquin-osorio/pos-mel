@@ -1,15 +1,3 @@
-/*
-
-  useEffect(() => {
-    fetch(`https://api.mercadolibre.com/users/${seller}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSellerName(data.nickname)
-      })
-  }, [seller]) // TODO: Put this function in a custom hook
-
-*/
-
 import { useState, useEffect } from 'react'
 
 export const useSellerName = (seller) => {
