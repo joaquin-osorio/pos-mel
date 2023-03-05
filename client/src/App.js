@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import ItemCardContainer from './components/ItemCardContainer/ItemCardContainer'
 import { shortnames, savedToast } from './utils/const'
-import { arrToClipboard, replaceTitlesWithShortnames, filterObjectsBySeller } from './utils/arrFunctions'
+import { arrToClipboard, replaceTitlesWithShortnames, filterObjectsBySeller, formatArr } from './utils/arrFunctions'
 import { useFetch } from './hooks'
 
 function App () {
@@ -31,13 +31,15 @@ function App () {
   const handleClick = () => { // TODO: Refactor this function
     fetch(`https://pos-mel.vercel.app/getRanking/?param=${categories[catIndex].ID}&save=true`)
       .then(() => {
-        const tempArr = filterObjectsBySeller(items, [229557596, 10477825])
-        arrToClipboard(replaceTitlesWithShortnames(tempArr, shortnames).map((item) => item.title))
+        let tempArr = [] // Create the temporary Array
+        tempArr = filterObjectsBySeller(items, [229557596, 10477825]) // Filter the items by seller
+        tempArr = replaceTitlesWithShortnames(tempArr, shortnames) // Replace the titles with the shortnames
+        tempArr = tempArr.map((item) => item.title) // Map the array to get only the titles
+        tempArr = formatArr(tempArr) // Format the array
+        arrToClipboard(tempArr) // Copy the array to the clipboard
       })
-      .then(() => {
-        toast(savedToast)
-      })
-  }
+      .then(() => { toast(savedToast) })
+  } // Checked
 
   return (
     <Box bg="#283247" minH="100vh" p={0}>
